@@ -1,5 +1,6 @@
 flake8
 flask
+flask-sqlalchemy
 pylint
 pytest
 pytest-watch

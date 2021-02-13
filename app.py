@@ -1,14 +1,19 @@
-import os
-
 from flask import Flask, jsonify
+from flask_sqlalchemy import SQLAlchemy
 
-base_dir = os.path.abspath(os.path.dirname(__file__))
+from config import config
 
-app = Flask(__name__)
-# TODO: Make create_app
-# app.config['SQLALCHEMY_DATABASE_URI'] = \
-#     'sqlite:///' + os.path.join(base_dir, 'data.sqlite')
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy()
+
+
+def create_app(config_name):
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
+    db.init_app(app)
+    return app
+
+
+app = create_app('default')
 
 
 @app.route('/')

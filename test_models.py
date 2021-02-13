@@ -1,6 +1,4 @@
 from datetime import date
-import os
-import tempfile
 
 import pytest
 
@@ -10,17 +8,14 @@ from models import db, Movie, Actor, ValidationError
 
 @pytest.fixture
 def init_test_db():
-    with tempfile.NamedTemporaryFile() as test_db:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + test_db.name
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        app.config['TESTING'] = True
-        db.init_app(app)
-        with app.app_context():
-            db.create_all()
-            yield
-            db.drop_all()
-
-    assert os.path.exists(test_db.name) is False
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['TESTING'] = True
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+        yield
+        db.drop_all()
 
 
 def test_movie_model(init_test_db):

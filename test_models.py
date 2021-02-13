@@ -12,6 +12,7 @@ from models import db, Movie, Actor, ValidationError
 def init_test_db():
     with tempfile.NamedTemporaryFile() as test_db:
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + test_db.name
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         app.config['TESTING'] = True
         db.init_app(app)
         with app.app_context():

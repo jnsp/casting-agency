@@ -1,6 +1,14 @@
+import os
+
 from flask import Flask, jsonify
 
+base_dir = os.path.abspath(os.path.dirname(__file__))
+
 app = Flask(__name__)
+# TODO: Make create_app
+# app.config['SQLALCHEMY_DATABASE_URI'] = \
+#     'sqlite:///' + os.path.join(base_dir, 'data.sqlite')
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 @app.route('/')
@@ -13,7 +21,7 @@ def check_health():
 
 @app.route('/movies')
 def get_movies():
-    movies = [1, 2, 3]
+    movies = []
     return jsonify({
         'success': True,
         'movies': movies,

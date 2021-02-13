@@ -2,12 +2,16 @@ from datetime import date
 
 import pytest
 
-from app import app
+from app import create_app, db
 
 
 @pytest.fixture
 def client():
-    return app.test_client()
+    app = create_app('testing')
+    with app.app_context():
+        db.create_all()
+        yield app.test_client()
+        db.drop_all()
 
 
 def test_health(client):

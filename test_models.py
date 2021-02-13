@@ -2,16 +2,13 @@ from datetime import date
 
 import pytest
 
-from app import app
-from models import db, Movie, Actor, ValidationError
+from app import create_app, db
+from models import Movie, Actor, ValidationError
 
 
 @pytest.fixture
 def init_test_db():
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['TESTING'] = True
-    db.init_app(app)
+    app = create_app('testing')
     with app.app_context():
         db.create_all()
         yield

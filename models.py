@@ -14,6 +14,9 @@ class Movie(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def to_dict(self):
+        return {'title': self.title, 'release_date': self.release_date}
+
 
 class Actor(db.Model):
     __tablename__ = 'actors'

@@ -33,6 +33,14 @@ def test_movie_model(init_test_db):
     assert second_saved_movie.release_date == date(2020, 1, 2)
 
 
+def test_movie_to_dict(init_test_db):
+    movie = Movie(title='TITLE', release_date=date(2020, 1, 1))
+    assert movie.to_dict() == {
+        'title': 'TITLE',
+        'release_date': date(2020, 1, 1)
+    }
+
+
 def test_actor_model(init_test_db):
     first_actor = Actor(name='ACTOR1', age=10, gender='F')
     first_actor.save()

@@ -30,6 +30,14 @@ class TestMovie:
         }
         assert res.get_json() == expected
 
+    def test_get_empty_movies_when_no_data(self, client):
+        res = client.get('/movies')
+        expected = {
+            'success': True,
+            'movies': [],
+        }
+        assert res.get_json() == expected
+
     def test_make_movie(self, client):
         res = client.post('/movies',
                           json={

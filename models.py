@@ -1,3 +1,5 @@
+from datetime import date
+
 from app import db
 
 
@@ -15,7 +17,8 @@ class Movie(db.Model):
         db.session.commit()
 
     def to_dict(self):
-        return {'title': self.title, 'release_date': self.release_date}
+        release_date = date.strftime(self.release_date, '%Y-%m-%d')
+        return {'title': self.title, 'release_date': release_date}
 
 
 class Actor(db.Model):

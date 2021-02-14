@@ -37,7 +37,7 @@ def test_movie_to_dict(init_test_db):
     movie = Movie(title='TITLE', release_date=date(2020, 1, 1))
     assert movie.to_dict() == {
         'title': 'TITLE',
-        'release_date': date(2020, 1, 1)
+        'release_date': '2020-01-01',
     }
 
 

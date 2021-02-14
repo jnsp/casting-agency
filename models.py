@@ -17,8 +17,7 @@ class Movie(db.Model):
         db.session.commit()
 
     def to_dict(self):
-        release_date = date.strftime(self.release_date, '%Y-%m-%d')
-        return {'title': self.title, 'release_date': release_date}
+        return {'title': self.title, 'release_date': str(self.release_date)}
 
 
 class Actor(db.Model):

@@ -51,7 +51,7 @@ class TestMovie:
             'release_date': '2020-01-02'
         }
 
-    def test_movie_wrong_date_format(self, client):
+    def test_wrong_date_format(self, client):
         res = client.post('/movies',
                           json={
                               'title': 'NEW_MOVIE',
@@ -81,6 +81,20 @@ class TestMovie:
             'title': 'NEW_TITLE',
             'release_date': '2021-01-01'
         }
+
+    def test_delete_movie(self, client):
+        Movie(title='TITLE', release_date=date(2020, 1, 1)).save()
+
+        res = client.delete('/movies/1')
+        expected = {
+            'success': True,
+            'deleted': {
+                'title': 'TITLE',
+                'release_date': '2020-01-01',
+            }
+        }
+        assert res.get_json() == expected
+        assert Movie.query.get(1) is None
 
 
 class TestActor:
@@ -147,6 +161,21 @@ class TestActor:
             'age': 20,
             'gender': 'X',
         }
+
+    def test_delete_actor(self, client):
+        Actor(name='ACTOR', age=10, gender='F').save()
+
+        res = client.delete('/actors/1')
+        expected = {
+            'success': True,
+            'deleted': {
+                'name': 'ACTOR',
+                'age': 10,
+                'gender': 'F',
+            }
+        }
+        assert res.get_json() == expected
+        assert Actor.query.get(1) is None
 
 
 def test_convert_str_to_date():

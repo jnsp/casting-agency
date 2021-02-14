@@ -51,6 +51,16 @@ def modify_movie(id):
     })
 
 
+@api.route('/movies/<int:id>', methods=['DELETE'])
+def remove_movie(id):
+    movie = Movie.query.get(id)
+    movie.remove()
+    return jsonify({
+        'success': True,
+        'deleted': movie.to_dict(),
+    })
+
+
 @api.route('/actors')
 def get_actors():
     actors = [a.to_dict() for a in Actor.query.all()]
@@ -86,6 +96,17 @@ def modify_actor(id):
     return jsonify({
         'success': True,
         'actor': actor.to_dict(),
+    })
+
+
+@api.route('/actors/<int:id>', methods=['DELETE'])
+def remove_actor(id):
+    actor = Actor.query.get(id)
+    actor.remove()
+
+    return jsonify({
+        'success': True,
+        'deleted': actor.to_dict(),
     })
 
 

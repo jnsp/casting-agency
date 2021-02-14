@@ -32,6 +32,9 @@ def test_movie_model():
     assert second_saved_movie.title == 'TITLE2'
     assert second_saved_movie.release_date == date(2020, 1, 2)
 
+    first_saved_movie.remove()
+    assert Movie.query.get(1) is None
+
 
 def test_movie_to_dict():
     movie = Movie(title='TITLE', release_date=date(2020, 1, 1))
@@ -59,6 +62,9 @@ def test_actor_model():
     assert second_saved_actor.name == 'ACTOR2'
     assert second_saved_actor.age == 20
     assert second_saved_actor.gender == 'M'
+
+    first_saved_actor.remove()
+    assert Actor.query.get(1) is None
 
 
 def test_actor_non_negative_age():

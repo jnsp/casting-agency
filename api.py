@@ -35,7 +35,7 @@ def make_movie():
 @api.route('/movies/<int:id>', methods=['PATCH'])
 def modify_movie(id):
     body = request.get_json()
-    movie = Movie.query.get(id)
+    movie = Movie.query.get_or_404(id)
 
     if (title := body.get('title')):
         movie.title = title
@@ -53,7 +53,7 @@ def modify_movie(id):
 
 @api.route('/movies/<int:id>', methods=['DELETE'])
 def remove_movie(id):
-    movie = Movie.query.get(id)
+    movie = Movie.query.get_or_404(id)
     movie.remove()
     return jsonify({
         'success': True,
@@ -82,7 +82,7 @@ def make_actor():
 @api.route('/actors/<int:id>', methods=['PATCH'])
 def modify_actor(id):
     body = request.get_json()
-    actor = Actor.query.get(id)
+    actor = Actor.query.get_or_404(id)
 
     if (name := body.get('name')):
         actor.name = name
@@ -101,7 +101,7 @@ def modify_actor(id):
 
 @api.route('/actors/<int:id>', methods=['DELETE'])
 def remove_actor(id):
-    actor = Actor.query.get(id)
+    actor = Actor.query.get_or_404(id)
     actor.remove()
 
     return jsonify({
@@ -110,13 +110,21 @@ def remove_actor(id):
     })
 
 
-def convert_str_to_date(date_str):
-    return datetime.strptime(date_str, '%Y-%m-%d').date()
-
-
 @api.errorhandler(400)
 def bad_request(e):
     return jsonify({
         'success': False,
         'error': e.description,
     }), 400
+
+
+@api.errorhandler(404)
+def not_found(e):
+    return jsonify({
+        'success': False,
+        'error': 'Not found',
+    }), 404
+
+
+def convert_str_to_date(date_str):
+    return datetime.strptime(date_str, '%Y-%m-%d').date()

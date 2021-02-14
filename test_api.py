@@ -94,7 +94,15 @@ class TestMovie:
             'release_date': '2021-01-01'
         }
 
-    def test_delete_movie(self, client):
+    def test_not_found_error_when_modify(self, client):
+        res = client.patch('/movies/1')
+        assert res.status_code == 404
+        assert res.get_json({
+            'success': False,
+            'error': 'Not found',
+        })
+
+    def test_remove_movie(self, client):
         Movie(title='TITLE', release_date=date(2020, 1, 1)).save()
 
         res = client.delete('/movies/1')
@@ -107,6 +115,14 @@ class TestMovie:
         }
         assert res.get_json() == expected
         assert Movie.query.get(1) is None
+
+    def test_not_found_error_when_remove(self, client):
+        res = client.delete('/movies/1')
+        assert res.status_code == 404
+        assert res.get_json({
+            'success': False,
+            'error': 'Not found',
+        })
 
 
 class TestActor:
@@ -174,7 +190,15 @@ class TestActor:
             'gender': 'X',
         }
 
-    def test_delete_actor(self, client):
+    def test_not_found_error_when_modify(self, client):
+        res = client.patch('/actors/1')
+        assert res.status_code == 404
+        assert res.get_json({
+            'success': False,
+            'error': 'Not found',
+        })
+
+    def test_remove_actor(self, client):
         Actor(name='ACTOR', age=10, gender='F').save()
 
         res = client.delete('/actors/1')
@@ -188,6 +212,14 @@ class TestActor:
         }
         assert res.get_json() == expected
         assert Actor.query.get(1) is None
+
+    def test_not_found_error_when_remove(self, client):
+        res = client.delete('/actors/1')
+        assert res.status_code == 404
+        assert res.get_json({
+            'success': False,
+            'error': 'Not found',
+        })
 
 
 def test_convert_str_to_date():

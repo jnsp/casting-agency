@@ -30,11 +30,35 @@ def test_get_movies(client):
 
     res = client.get('/movies')
     expected = {
-        'success':
-        True,
+        'success': True,
         'movies': [{
             'title': 'TITLE',
-            'release_date': 'Wed, 01 Jan 2020 00:00:00 GMT'
+            'release_date': '2020-01-01'
         }],
     }
     assert res.get_json() == expected
+
+
+def test_make_movie(client):
+    res = client.post('/movies',
+                      json={
+                          'title': 'NEW_MOVIE',
+                          'release_date': '2020-01-02'
+                      })
+    expected = {
+        'success': True,
+        'movies': [{
+            'title': 'NEW_MOVIE',
+            'release_date': '2020-01-02'
+        }]
+    }
+    assert res.get_json() == expected
+
+
+def test_movie_wrong_date_format(client):
+    res = client.post('/movies',
+                      json={
+                          'title': 'NEW_MOVIE',
+                          'release_date': '020-01-02'
+                      })
+    assert res.status_code == 400

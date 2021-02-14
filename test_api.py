@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 
 from app import create_app, db
-from models import Movie
+from models import Movie, Actor
 
 
 @pytest.fixture
@@ -16,8 +16,7 @@ def client():
 
 
 def test_get_movies(client):
-    db.session.add(Movie(title='TITLE', release_date=date(2020, 1, 1)))
-    db.session.commit()
+    Movie(title='TITLE', release_date=date(2020, 1, 1)).save()
 
     res = client.get('/movies')
     expected = {
@@ -53,3 +52,18 @@ def test_movie_wrong_date_format(client):
                           'release_date': '020-01-02'
                       })
     assert res.status_code == 400
+
+
+def test_get_actors(client):
+    Actor(name='ACTOR', age=10, gender='F').save()
+
+    res = client.get('/actors')
+    expected = {
+        'success': True,
+        'actors': [{
+            'name': 'ACTOR',
+            'age': 10,
+            'gender': 'F',
+        }]
+    }
+    assert res.get_json() == expected

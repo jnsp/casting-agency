@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request, abort
 
-from models import Movie
+from models import Movie, Actor
 
 api = Blueprint('api', __name__)
 
@@ -31,4 +31,13 @@ def make_movie():
     return jsonify({
         'success': True,
         'movies': movies,
+    }), 200
+
+
+@api.route('/actors')
+def get_actors():
+    actors = [a.to_dict() for a in Actor.query.all()]
+    return jsonify({
+        'success': True,
+        'actors': actors,
     }), 200

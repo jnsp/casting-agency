@@ -15,15 +15,6 @@ def client():
         db.drop_all()
 
 
-def test_health(client):
-    res = client.get('/')
-    expected = {
-        'success': True,
-        'data': 'Healthy!',
-    }
-    assert res.get_json() == expected
-
-
 def test_get_movies(client):
     db.session.add(Movie(title='TITLE', release_date=date(2020, 1, 1)))
     db.session.commit()

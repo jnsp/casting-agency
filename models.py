@@ -40,6 +40,13 @@ class Actor(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'age': self.age,
+            'gender': self.gender,
+        }
+
 
 class ValidationError(ValueError):
     pass

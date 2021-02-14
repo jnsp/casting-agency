@@ -6,7 +6,7 @@ from app import create_app, db
 from models import Movie, Actor, ValidationError
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def init_test_db():
     app = create_app('testing')
     with app.app_context():
@@ -15,7 +15,7 @@ def init_test_db():
         db.drop_all()
 
 
-def test_movie_model(init_test_db):
+def test_movie_model():
     first_movie = Movie(title='TITLE1', release_date=date(2020, 1, 1))
     first_movie.save()
     second_movie = Movie(title='TITLE2', release_date=date(2020, 1, 2))
@@ -33,7 +33,7 @@ def test_movie_model(init_test_db):
     assert second_saved_movie.release_date == date(2020, 1, 2)
 
 
-def test_movie_to_dict(init_test_db):
+def test_movie_to_dict():
     movie = Movie(title='TITLE', release_date=date(2020, 1, 1))
     assert movie.to_dict() == {
         'title': 'TITLE',
@@ -41,7 +41,7 @@ def test_movie_to_dict(init_test_db):
     }
 
 
-def test_actor_model(init_test_db):
+def test_actor_model():
     first_actor = Actor(name='ACTOR1', age=10, gender='F')
     first_actor.save()
     second_actor = Actor(name='ACTOR2', age=20, gender='M')
@@ -61,6 +61,12 @@ def test_actor_model(init_test_db):
     assert second_saved_actor.gender == 'M'
 
 
-def test_actor_non_negative_age(init_test_db):
+def test_actor_non_negative_age():
     with pytest.raises(ValidationError, match='Age is negative'):
         Actor(age=-1)
+
+
+def test_actor_to_dict():
+    actor = Actor(name='Actor', age=10, gender='F')
+    assert actor.to_dict() == {'name': 'Actor', 'age': 10, 'gender': 'F'}
+    pass

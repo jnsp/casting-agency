@@ -2,6 +2,8 @@ flake8
 flask
 flask-sqlalchemy
 pylint
+pylint-flask
+pylint-flask-sqlalchemy
 pytest
 pytest-watch
 yapf

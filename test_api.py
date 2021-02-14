@@ -66,6 +66,10 @@ class TestMovie:
                               'release_date': '020-01-02'
                           })
         assert res.status_code == 400
+        assert res.get_json() == {
+            'success': False,
+            'error': 'Wrong date format: YYYY-MM-DD',
+        }
 
     def test_modify_movie(self, client):
         Movie(title='TITLE', release_date=date(2020, 1, 1)).save()

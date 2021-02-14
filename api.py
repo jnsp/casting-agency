@@ -22,7 +22,7 @@ def make_movie():
         movie = Movie(title=body['title'],
                       release_date=convert_str_to_date(body['release_date']))
     except ValueError:
-        abort(400)
+        abort(400, 'Wrong date format: YYYY-MM-DD')
     else:
         movie.save()
 
@@ -112,3 +112,11 @@ def remove_actor(id):
 
 def convert_str_to_date(date_str):
     return datetime.strptime(date_str, '%Y-%m-%d').date()
+
+
+@api.errorhandler(400)
+def bad_request(e):
+    return jsonify({
+        'success': False,
+        'error': e.description,
+    }), 400

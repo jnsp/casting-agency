@@ -37,12 +37,18 @@ def test_make_movie(client):
                       })
     expected = {
         'success': True,
-        'movies': [{
+        'movie': {
             'title': 'NEW_MOVIE',
             'release_date': '2020-01-02'
-        }]
+        }
     }
     assert res.get_json() == expected
+
+    movie = Movie.query.get(1)
+    assert movie.to_dict() == {
+        'title': 'NEW_MOVIE',
+        'release_date': '2020-01-02'
+    }
 
 
 def test_movie_wrong_date_format(client):
@@ -67,3 +73,24 @@ def test_get_actors(client):
         }]
     }
     assert res.get_json() == expected
+
+
+def test_make_actor(client):
+    res = client.post('/actors',
+                      json={
+                          'name': 'NEW_ACTOR',
+                          'age': 20,
+                          'gender': 'M'
+                      })
+    expected = {
+        'success': True,
+        'actor': {
+            'name': 'NEW_ACTOR',
+            'age': 20,
+            'gender': 'M'
+        }
+    }
+    assert res.get_json() == expected
+
+    actor = Actor.query.get(1)
+    assert actor.to_dict() == {'name': 'NEW_ACTOR', 'age': 20, 'gender': 'M'}

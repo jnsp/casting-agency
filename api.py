@@ -27,10 +27,9 @@ def make_movie():
     else:
         movie.save()
 
-    movies = [m.to_dict() for m in Movie.query.all()]
     return jsonify({
         'success': True,
-        'movies': movies,
+        'movie': movie.to_dict(),
     }), 200
 
 
@@ -41,3 +40,12 @@ def get_actors():
         'success': True,
         'actors': actors,
     }), 200
+
+
+@api.route('/actors', methods=['POST'])
+def make_actor():
+    body = request.get_json()
+    actor = Actor(**body)
+    actor.save()
+
+    return jsonify({'success': True, 'actor': actor.to_dict()})

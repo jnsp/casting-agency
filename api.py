@@ -20,8 +20,7 @@ def make_movie():
     body = request.get_json()
     try:
         movie = Movie(title=body['title'],
-                      release_date=datetime.strptime(body['release_date'],
-                                                     '%Y-%m-%d').date())
+                      release_date=convert_str_to_date(body['release_date']))
     except ValueError:
         abort(400)
     else:
@@ -31,6 +30,25 @@ def make_movie():
         'success': True,
         'movie': movie.to_dict(),
     }), 200
+
+
+@api.route('/movies/<int:id>', methods=['PATCH'])
+def modify_movie(id):
+    body = request.get_json()
+    movie = Movie.query.get(id)
+
+    if (title := body.get('title')):
+        movie.title = title
+    if (release_date := body.get('release_date')):
+        release_date = convert_str_to_date(release_date)
+        movie.release_date = release_date
+
+    movie.save()
+
+    return jsonify({
+        'success': True,
+        'movie': movie.to_dict(),
+    })
 
 
 @api.route('/actors')
@@ -49,3 +67,7 @@ def make_actor():
     actor.save()
 
     return jsonify({'success': True, 'actor': actor.to_dict()})
+
+
+def convert_str_to_date(date_str):
+    return datetime.strptime(date_str, '%Y-%m-%d').date()

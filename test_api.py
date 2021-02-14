@@ -2,6 +2,7 @@ from datetime import date
 
 import pytest
 
+from api import convert_str_to_date
 from app import create_app, db
 from models import Movie, Actor
 
@@ -15,7 +16,7 @@ def client():
         db.drop_all()
 
 
-class MovieTest:
+class TestMovie:
     def test_get_movies(self, client):
         Movie(title='TITLE', release_date=date(2020, 1, 1)).save()
 
@@ -58,8 +59,31 @@ class MovieTest:
                           })
         assert res.status_code == 400
 
+    def test_modify_movie(self, client):
+        Movie(title='TITLE', release_date=date(2020, 1, 1)).save()
 
-class ActorTest:
+        res = client.patch('/movies/1',
+                           json={
+                               'title': 'NEW_TITLE',
+                               'release_date': '2021-01-01'
+                           })
+        expected = {
+            'success': True,
+            'movie': {
+                'title': 'NEW_TITLE',
+                'release_date': '2021-01-01'
+            }
+        }
+        assert res.get_json() == expected
+
+        movie = Movie.query.get(1)
+        assert movie.to_dict() == {
+            'title': 'NEW_TITLE',
+            'release_date': '2021-01-01'
+        }
+
+
+class TestActor:
     def test_get_actors(self, client):
         Actor(name='ACTOR', age=10, gender='F').save()
 
@@ -97,3 +121,7 @@ class ActorTest:
             'age': 20,
             'gender': 'M'
         }
+
+
+def test_convert_str_to_date():
+    assert convert_str_to_date('2021-01-01') == date(2021, 1, 1)

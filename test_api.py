@@ -122,6 +122,32 @@ class TestActor:
             'gender': 'M'
         }
 
+    def test_modify_actor(self, client):
+        Actor(name='ACTOR', age=10, gender='F').save()
+
+        res = client.patch('/actors/1',
+                           json={
+                               'name': 'NEW_NAME',
+                               'age': 20,
+                               'gender': 'X',
+                           })
+        expected = {
+            'success': True,
+            'actor': {
+                'name': 'NEW_NAME',
+                'age': 20,
+                'gender': 'X',
+            }
+        }
+        assert res.get_json() == expected
+
+        actor = Actor.query.get(1)
+        assert actor.to_dict() == {
+            'name': 'NEW_NAME',
+            'age': 20,
+            'gender': 'X',
+        }
+
 
 def test_convert_str_to_date():
     assert convert_str_to_date('2021-01-01') == date(2021, 1, 1)

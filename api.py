@@ -69,5 +69,25 @@ def make_actor():
     return jsonify({'success': True, 'actor': actor.to_dict()})
 
 
+@api.route('/actors/<int:id>', methods=['PATCH'])
+def modify_actor(id):
+    body = request.get_json()
+    actor = Actor.query.get(id)
+
+    if (name := body.get('name')):
+        actor.name = name
+    if (age := body.get('age')):
+        actor.age = age
+    if (gender := body.get('gender')):
+        actor.gender = gender
+
+    actor.save()
+
+    return jsonify({
+        'success': True,
+        'actor': actor.to_dict(),
+    })
+
+
 def convert_str_to_date(date_str):
     return datetime.strptime(date_str, '%Y-%m-%d').date()

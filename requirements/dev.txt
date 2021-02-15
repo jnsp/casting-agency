@@ -1,6 +1,5 @@
+-r common
 flake8
-flask
-flask-sqlalchemy
 pylint
 pylint-flask
 pylint-flask-sqlalchemy

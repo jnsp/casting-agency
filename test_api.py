@@ -10,10 +10,11 @@ from models import Movie, Actor
 @pytest.fixture
 def client():
     app = create_app('testing')
-    with app.app_context():
-        db.create_all()
-        yield app.test_client()
-        db.drop_all()
+    with app.test_client() as client:
+        with app.app_context():
+            db.create_all()
+            yield client
+            db.drop_all()
 
 
 @pytest.fixture

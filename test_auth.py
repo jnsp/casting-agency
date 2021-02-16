@@ -1,9 +1,12 @@
+import base64
+import json
+
 from dotenv import dotenv_values
 import pytest
 import requests
 
 from app import create_app
-from auth import get_auth_token, AuthError
+from auth import get_auth_token, validate_jwt, AuthError
 
 
 @pytest.fixture()
@@ -42,8 +45,11 @@ def test_autherror_when_auth_type_is_not_bearer(app):
             get_auth_token()
 
 
-def test_get_test_jwt():
-    assert get_test_jwt()
+def test_validate_jwt():
+    test_token = get_test_jwt()
+    expected_payload = json.loads(
+        base64.b64decode(test_token.split('.')[1]).decode('utf-8'))
+    assert validate_jwt(test_token) == expected_payload
 
 
 def get_test_jwt():

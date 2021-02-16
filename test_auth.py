@@ -9,12 +9,11 @@ from app import create_app
 from auth import get_auth_token, validate_jwt, AuthError
 
 
-@pytest.fixture()
-def app():
-    return create_app('testing')
-
-
 class TESTAuthToken:
+    @pytest.fixture()
+    def app(self):
+        return create_app('testing')
+
     def test_get_auth_token(self, app):
         token_header = {'Authorization': 'bearer TOKEN'}
 

@@ -46,7 +46,7 @@ class TESTAuthToken:
 
 class TestValidateJWT:
     def test_validate_jwt(self):
-        test_token = get_test_jwt()
+        test_token = self.get_test_jwt()
         expected_payload = json.loads(
             b64decode(test_token.split('.')[1]).decode('utf-8'))
         assert validate_jwt(test_token) == expected_payload
@@ -65,18 +65,20 @@ class TestValidateJWT:
         with pytest.raises(AuthError, match='No matched kid'):
             validate_jwt(unmatched_token)
 
+    def get_test_jwt(self):
+        config = {
+            **dotenv_values('.env.shared'),
+            **dotenv_values('.env.secret')
+        }
 
-def get_test_jwt():
-    config = {**dotenv_values('.env.shared'), **dotenv_values('.env.secret')}
+        url = f"https://{config['AUTH0_DOMAIN']}/oauth/token"
+        headers = {'content-type': 'application/json'}
+        data = {
+            'client_id': config['TEST_CLIENT_ID'],
+            'client_secret': config['TEST_CLIENT_SECRET'],
+            'audience': config['API_AUDIENCE'],
+            'grant_type': 'client_credentials',
+        }
+        res = requests.post(url, headers=headers, json=data)
 
-    url = f"https://{config['AUTH0_DOMAIN']}/oauth/token"
-    headers = {'content-type': 'application/json'}
-    data = {
-        'client_id': config['TEST_CLIENT_ID'],
-        'client_secret': config['TEST_CLIENT_SECRET'],
-        'audience': config['API_AUDIENCE'],
-        'grant_type': 'client_credentials',
-    }
-    res = requests.post(url, headers=headers, json=data)
-
-    return res.json()['access_token']
+        return res.json()['access_token']

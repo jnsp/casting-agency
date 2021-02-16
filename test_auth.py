@@ -52,6 +52,15 @@ def test_validate_jwt():
     assert validate_jwt(test_token) == expected_payload
 
 
+def test_autherror_when_token_has_no_kid():
+    test_header = base64.b64encode(
+        b'{"no_kid": "aVcItGAydwX7JUBqWl1Qq"}').decode('utf-8')
+    no_kid_token = test_header + '..'
+
+    with pytest.raises(AuthError, match="Token has no kid"):
+        validate_jwt(no_kid_token)
+
+
 def get_test_jwt():
     config = {**dotenv_values('.env.shared'), **dotenv_values('.env.secret')}
 

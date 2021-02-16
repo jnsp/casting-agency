@@ -30,11 +30,19 @@ def validate_jwt(token):
     if not (signing_key := [k for k in jwks['keys'] if k['kid'] == kid]):
         raise AuthError('No matched kid')
 
-    payload = jwt.decode(token,
-                         signing_key[0],
-                         algorithms=config['ALGORITHM'],
-                         audience=config['API_AUDIENCE'],
-                         issuer=f"https://{config['AUTH0_DOMAIN']}/")
+    try:
+        payload = jwt.decode(token,
+                             signing_key[0],
+                             algorithms=config['ALGORITHM'],
+                             audience=config['API_AUDIENCE'],
+                             issuer=f"https://{config['AUTH0_DOMAIN']}/")
+    except jwt.ExpiredSignatureError:
+        raise AuthError('Token is expired')
+    except jwt.JWTClaimsError:
+        raise AuthError('Invalid claim')
+    except Exception:
+        raise AuthError('Unable validate token')
+
     return payload
 
 

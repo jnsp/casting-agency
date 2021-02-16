@@ -1,5 +1,5 @@
-import base64
 import json
+from base64 import b64encode, b64decode
 
 from dotenv import dotenv_values
 import pytest
@@ -48,17 +48,24 @@ def test_autherror_when_auth_type_is_not_bearer(app):
 def test_validate_jwt():
     test_token = get_test_jwt()
     expected_payload = json.loads(
-        base64.b64decode(test_token.split('.')[1]).decode('utf-8'))
+        b64decode(test_token.split('.')[1]).decode('utf-8'))
     assert validate_jwt(test_token) == expected_payload
 
 
 def test_autherror_when_token_has_no_kid():
-    test_header = base64.b64encode(
-        b'{"no_kid": "aVcItGAydwX7JUBqWl1Qq"}').decode('utf-8')
-    no_kid_token = test_header + '..'
+    no_kid_header = b64encode(b'{"no_kid": "KID"}').decode('utf-8')
+    no_kid_token = no_kid_header + '..'
 
-    with pytest.raises(AuthError, match="Token has no kid"):
+    with pytest.raises(AuthError, match='Token has no kid'):
         validate_jwt(no_kid_token)
+
+
+def test_autherror_when_no_matched_kid():
+    unmatched_header = b64encode(b'{"kid": "unmatced_kid"}').decode('utf-8')
+    unmatched_token = unmatched_header + '..'
+
+    with pytest.raises(AuthError, match='No matched kid'):
+        validate_jwt(unmatched_token)
 
 
 def get_test_jwt():

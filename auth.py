@@ -24,17 +24,14 @@ def validate_jwt(token):
     jwks_url = f"https://{config['AUTH0_DOMAIN']}/.well-known/jwks.json"
     jwks = requests.get(jwks_url).json()
 
-    kid = jwt.get_unverified_header(token).get('kid')
-    if kid is None:
+    if not (kid := jwt.get_unverified_header(token).get('kid')):
         raise AuthError('Token has no kid')
 
-    for key_set in jwks['keys']:
-        if kid == key_set['kid']:
-            signing_key = key_set
-            break
+    if not (signing_key := [k for k in jwks['keys'] if k['kid'] == kid]):
+        raise AuthError('No matched kid')
 
     payload = jwt.decode(token,
-                         signing_key,
+                         signing_key[0],
                          algorithms=config['ALGORITHM'],
                          audience=config['API_AUDIENCE'],
                          issuer=f"https://{config['AUTH0_DOMAIN']}/")

@@ -58,5 +58,19 @@ def check_permission(permission, payload):
     return True
 
 
+def require_auth(permission=None):
+    def _require_auth(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            jwt = get_auth_token()
+            payload = validate_jwt(jwt)
+            check_permission(permission, payload)
+            return f(*args, **kwargs)
+
+        return wrapper
+
+    return _require_auth
+
+
 class AuthError(Exception):
     pass

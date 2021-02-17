@@ -1,5 +1,4 @@
 flask
 flask-sqlalchemy
-pyjwt
 python-dotenv
 python-jose

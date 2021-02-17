@@ -1,3 +1,5 @@
+from functools import wraps
+
 from dotenv import dotenv_values
 from flask import request
 from jose import jwt
@@ -44,6 +46,16 @@ def validate_jwt(token):
         raise AuthError('Unable validate token')
 
     return payload
+
+
+def check_permission(permission, payload):
+    if (permissions := payload.get('permissions')) is None:
+        raise AuthError('Payload has NO permissions')
+
+    if permission and permission not in permissions:
+        raise AuthError('Permission not found')
+
+    return True
 
 
 class AuthError(Exception):

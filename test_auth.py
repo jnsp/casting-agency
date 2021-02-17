@@ -6,7 +6,7 @@ import pytest
 import requests
 
 from app import create_app
-from auth import get_auth_token, validate_jwt, AuthError
+from auth import get_auth_token, validate_jwt, check_permission, AuthError
 
 
 class TESTAuthToken:
@@ -81,3 +81,31 @@ class TestValidateJWT:
         res = requests.post(url, headers=headers, json=data)
 
         return res.json()['access_token']
+
+
+class TestPermmision:
+    def test_check_permission(self):
+        permission = 'run:test'
+        payload = {'permissions': ['run:test']}
+
+        assert check_permission(permission, payload) is True
+
+    def test_check_empty_permission(self):
+        empty_permission = None
+        payload = {'permissions': ['run:test']}
+
+        assert check_permission(empty_permission, payload) is True
+
+    def test_check_permission_not_permitted(self):
+        permission = 'creat:test'
+        not_permitted_payload = {'permissions': ['run:test']}
+
+        with pytest.raises(AuthError, match='Permission not found'):
+            check_permission(permission, not_permitted_payload)
+
+    def test_autherror_when_payload_has_no_permissions(self):
+        any_permission = 'any permission'
+        no_permissions_payload = {'no_permissions': ['any permissions']}
+
+        with pytest.raises(AuthError, match='Payload has NO permissions'):
+            check_permission(any_permission, no_permissions_payload)

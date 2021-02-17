@@ -5,6 +5,8 @@ from flask import request
 from jose import jwt
 import requests
 
+config = {**dotenv_values('.env.shared'), **dotenv_values('.env.secret')}
+
 
 def get_auth_token():
     if (auth_header := request.headers.get('Authorization')) is None:
@@ -21,11 +23,12 @@ def get_auth_token():
     return token
 
 
-def validate_jwt(token):
-    config = {**dotenv_values('.env.shared'), **dotenv_values('.env.secret')}
+def get_jwks():
     jwks_url = f"https://{config['AUTH0_DOMAIN']}/.well-known/jwks.json"
-    jwks = requests.get(jwks_url).json()
+    return requests.get(jwks_url).json()
 
+
+def validate_jwt(token, jwks):
     try:
         token_header = jwt.get_unverified_header(token)
     except jwt.JWTError:
@@ -68,7 +71,8 @@ def require_auth(permission=None):
         @wraps(f)
         def wrapper(*args, **kwargs):
             jwt = get_auth_token()
-            payload = validate_jwt(jwt)
+            jwks = get_jwks()
+            payload = validate_jwt(jwt, jwks)
             check_permission(permission, payload)
             return f(*args, **kwargs)
 

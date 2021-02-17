@@ -26,7 +26,12 @@ def validate_jwt(token):
     jwks_url = f"https://{config['AUTH0_DOMAIN']}/.well-known/jwks.json"
     jwks = requests.get(jwks_url).json()
 
-    if not (kid := jwt.get_unverified_header(token).get('kid')):
+    try:
+        token_header = jwt.get_unverified_header(token)
+    except jwt.JWTError:
+        raise AuthError('Unable decoding token headers')
+
+    if not (kid := token_header.get('kid')):
         raise AuthError('Token has no kid')
 
     if not (signing_key := [k for k in jwks['keys'] if k['kid'] == kid]):

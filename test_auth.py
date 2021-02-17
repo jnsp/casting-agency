@@ -50,6 +50,12 @@ class TestValidateJWT:
             b64decode(test_token.split('.')[1]).decode('utf-8'))
         assert validate_jwt(test_token) == expected_payload
 
+    def test_autherror_when_token_has_no_header(self):
+        no_header_token = 'TOKEN'
+
+        with pytest.raises(AuthError, match='Unable decoding token headers'):
+            validate_jwt(no_header_token)
+
     def test_autherror_when_token_has_no_kid(self):
         no_kid_header = b64encode(b'{"no_kid": "KID"}').decode('utf-8')
         no_kid_token = no_kid_header + '..'

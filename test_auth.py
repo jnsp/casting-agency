@@ -2,7 +2,6 @@ import json
 from base64 import b64encode, b64decode
 
 from dotenv import dotenv_values
-from flask import current_app
 import pytest
 import requests
 
@@ -26,23 +25,28 @@ class TESTAuthToken:
         no_header = {}
 
         with app.test_request_context(headers=no_header):
-            with pytest.raises(AuthError, match='No Authorization header'):
+            with pytest.raises(AuthError) as e:
                 get_auth_token()
+            assert e.value.error == 'No Authorization header'
+            assert e.value.status_code == 401
 
     def test_autherror_when_auth_splited_improperly(self, app):
         too_many_splited_header = {'Authorization': 'A B C'}
 
         with app.test_request_context(headers=too_many_splited_header):
-            with pytest.raises(AuthError,
-                               match='Token splited too few or many'):
+            with pytest.raises(AuthError) as e:
                 get_auth_token()
+            assert e.value.error == 'Token splited too few or many'
+            assert e.status_code == 401
 
     def test_autherror_when_auth_type_is_not_bearer(self, app):
         not_bearer_token_header = {'Authorization': 'basic TOKEN'}
 
         with app.test_request_context(headers=not_bearer_token_header):
-            with pytest.raises(AuthError, match='Not bearer auth type'):
+            with pytest.raises(AuthError) as e:
                 get_auth_token()
+            assert e.value.error == 'Not bearer auth type'
+            assert e.status_code == 401
 
 
 class TestValidateJWT:
@@ -59,22 +63,28 @@ class TestValidateJWT:
     def test_autherror_when_token_has_no_header(self, jwks):
         no_header_token = 'TOKEN'
 
-        with pytest.raises(AuthError, match='Unable decoding token headers'):
+        with pytest.raises(AuthError) as e:
             validate_jwt(no_header_token, jwks)
+        assert e.value.error == 'Unable decoding token headers'
+        assert e.value.status_code == 401
 
     def test_autherror_when_token_has_no_kid(self, jwks):
         no_kid_header = b64encode(b'{"no_kid": "KID"}').decode('utf-8')
         no_kid_token = no_kid_header + '..'
 
-        with pytest.raises(AuthError, match='Token has no kid'):
+        with pytest.raises(AuthError) as e:
             validate_jwt(no_kid_token, jwks)
+        assert e.value.error == 'Token has no kid'
+        assert e.value.status_code == 401
 
     def test_autherror_when_no_matched_kid(self, jwks):
         unmatched_header = b64encode(b'{"kid": "KID"}').decode('utf-8')
         unmatched_token = unmatched_header + '..'
 
-        with pytest.raises(AuthError, match='No matched kid'):
+        with pytest.raises(AuthError) as e:
             validate_jwt(unmatched_token, jwks)
+        assert e.value.error == 'No matched kid'
+        assert e.value.status_code == 401
 
     def get_test_jwt(self):
         config = {
@@ -112,12 +122,16 @@ class TestPermmision:
         permission = 'creat:test'
         not_permitted_payload = {'permissions': ['run:test']}
 
-        with pytest.raises(AuthError, match='Permission not found'):
+        with pytest.raises(AuthError) as e:
             check_permission(permission, not_permitted_payload)
+        assert e.value.error == 'Permission not found'
+        assert e.value.status_code == 403
 
     def test_autherror_when_payload_has_no_permissions(self):
         any_permission = 'any permission'
         no_permissions_payload = {'no_permissions': ['any permissions']}
 
-        with pytest.raises(AuthError, match='Payload has NO permissions'):
+        with pytest.raises(AuthError) as e:
             check_permission(any_permission, no_permissions_payload)
+        assert e.value.error == 'Payload has NO permissions'
+        assert e.value.status_code == 403

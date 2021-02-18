@@ -3,3 +3,4 @@ flask-migrate
 flask-sqlalchemy
 python-dotenv
 python-jose
+requests

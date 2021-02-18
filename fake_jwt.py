@@ -39,6 +39,6 @@ payload = {
 }
 
 
-def get_test_token(permissions):
+def get_fake_token(permissions):
     payload['permissions'] = permissions
     return jwt.encode(payload, private_key, algorithm='RS256', headers=headers)

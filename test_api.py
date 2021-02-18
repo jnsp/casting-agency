@@ -4,6 +4,7 @@ import pytest
 
 from api import convert_str_to_date
 from app import create_app, db
+from fake_jwt import get_fake_token
 from models import Movie, Actor
 
 
@@ -11,32 +12,38 @@ from models import Movie, Actor
 def client():
     app = create_app('testing')
     with app.test_client() as client:
+        app.config['USE_FAKE_JWKS'] = True
         with app.app_context():
             db.create_all()
             yield client
             db.drop_all()
 
 
-@pytest.fixture
-def test_movie():
-    movie = Movie(title='MOVIE', release_date=date(2021, 1, 1))
-    movie.save()
-    return movie
-
-
-@pytest.fixture
-def new_movie_info():
-    return {'title': 'NEW_MOVIE', 'release_date': '2021-02-01'}
-
-
 class TestMovie:
-    def test_get_movies(self, client, test_movie):
-        res = client.get('/movies')
+    @pytest.fixture
+    def test_movie(self):
+        movie = Movie(title='MOVIE', release_date=date(2021, 1, 1))
+        movie.save()
+        return movie
+
+    @pytest.fixture
+    def new_movie_info(self):
+        return {'title': 'NEW_MOVIE', 'release_date': '2021-02-01'}
+
+    @pytest.fixture
+    def view_movies_header(self):
+        view_movies_token = get_fake_token(['view:movies'])
+        return {'Authorization': f'bearer {view_movies_token}'}
+
+    def test_get_movies(self, client, test_movie, view_movies_header):
+        res = client.get('/movies', headers=view_movies_header)
+
         expected = {'success': True, 'movies': [test_movie.to_dict()]}
         assert res.get_json() == expected
 
-    def test_get_empty_movies_when_no_data(self, client):
-        res = client.get('/movies')
+    def test_get_empty_movies_when_no_data(self, client, view_movies_header):
+        res = client.get('/movies', headers=view_movies_header)
+
         expected = {'success': True, 'movies': []}
         assert res.get_json() == expected
 
@@ -96,6 +103,16 @@ def new_actor_info():
 
 
 class TestActor:
+    @pytest.fixture
+    def test_actor(self):
+        actor = Actor(name='ACTOR', age=10, gender='F')
+        actor.save()
+        return actor
+
+    @pytest.fixture
+    def new_actor_info(self):
+        return {'name': 'NEW_ACTOR', 'age': 20, 'gender': 'X'}
+
     def test_get_actors(self, client, test_actor):
         res = client.get('/actors')
         expected = {'success': True, 'actors': [test_actor.to_dict()]}

@@ -1,12 +1,14 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request, abort
 
+from auth import require_auth
 from models import Movie, Actor
 
 api = Blueprint('api', __name__)
 
 
 @api.route('/movies')
+@require_auth(permission='view:movies')
 def get_movies():
     movies = [m.to_dict() for m in Movie.query.all()]
     return jsonify({

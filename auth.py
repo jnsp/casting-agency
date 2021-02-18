@@ -1,9 +1,11 @@
 from functools import wraps
 
 from dotenv import dotenv_values
-from flask import request
+from flask import request, current_app
 from jose import jwt
 import requests
+
+import fake_jwt
 
 config = {**dotenv_values('.env.shared'), **dotenv_values('.env.secret')}
 
@@ -71,7 +73,8 @@ def require_auth(permission=None):
         @wraps(f)
         def wrapper(*args, **kwargs):
             jwt = get_auth_token()
-            jwks = get_jwks()
+            use_test_jwks = current_app.config.get('USE_FAKE_JWKS')
+            jwks = get_jwks() if not use_test_jwks else fake_jwt.jwks
             payload = validate_jwt(jwt, jwks)
             check_permission(permission, payload)
             return f(*args, **kwargs)

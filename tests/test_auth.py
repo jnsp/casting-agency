@@ -6,8 +6,8 @@ import pytest
 import requests
 
 from app import create_app
-from auth import get_auth_token, get_jwks, validate_jwt, check_permission, \
-    AuthError
+from app.auth import get_auth_token, get_jwks, validate_jwt, \
+    check_permission, AuthError
 
 
 class TESTAuthToken:

@@ -2,10 +2,10 @@ from datetime import date
 
 import pytest
 
-from api import convert_str_to_date
+from app.api import convert_str_to_date
 from app import create_app, db
-from fake_jwt import get_fake_token
-from models import Movie, Actor
+from app.fake_jwt import get_fake_token
+from app.models import Movie, Actor
 
 
 @pytest.fixture

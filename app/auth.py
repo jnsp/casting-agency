@@ -5,7 +5,7 @@ from flask import request, current_app
 from jose import jwt
 import requests
 
-import fake_jwt
+from . import fake_jwt
 
 config = {**dotenv_values('.env.shared'), **dotenv_values('.env.secret')}
 

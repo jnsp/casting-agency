@@ -1,8 +1,8 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request, abort
 
-from auth import require_auth, AuthError
-from models import Movie, Actor
+from .auth import require_auth, AuthError
+from .models import Movie, Actor
 
 api = Blueprint('api', __name__)
 

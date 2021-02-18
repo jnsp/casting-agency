@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 
 from app import create_app, db
-from models import Movie, Actor, ValidationError
+from app.models import Movie, Actor, ValidationError
 
 
 @pytest.fixture(autouse=True)

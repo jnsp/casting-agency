@@ -22,10 +22,15 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(base_dir, 'data.sqlite')
 
+    
+class HerokuConfig(ProductionConfig):
+    pass
+
 
 config = {
     'testing': TestConfig,
     'development': DevelopmentConfig,
     'production': ProductionConfig,
+    'heroku': HerokuConfig,
     'default': DevelopmentConfig,
 }

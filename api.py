@@ -18,6 +18,7 @@ def get_movies():
 
 
 @api.route('/movies', methods=['POST'])
+@require_auth(permission='add:movies')
 def make_movie():
     body = request.get_json()
     try:
@@ -35,6 +36,7 @@ def make_movie():
 
 
 @api.route('/movies/<int:id>', methods=['PATCH'])
+@require_auth(permission='modify:movies')
 def modify_movie(id):
     body = request.get_json()
     movie = Movie.query.get_or_404(id)
@@ -54,6 +56,7 @@ def modify_movie(id):
 
 
 @api.route('/movies/<int:id>', methods=['DELETE'])
+@require_auth(permission='delete:movies')
 def remove_movie(id):
     movie = Movie.query.get_or_404(id)
     movie.remove()

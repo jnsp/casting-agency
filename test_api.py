@@ -30,34 +30,37 @@ class TestMovie:
     def new_movie_info(self):
         return {'title': 'NEW_MOVIE', 'release_date': '2021-02-01'}
 
-    @pytest.fixture
-    def view_movies_header(self):
-        view_movies_token = get_fake_token(['view:movies'])
-        return {'Authorization': f'bearer {view_movies_token}'}
+    def header(self, permission):
+        token = get_fake_token([permission])
+        return {'Authorization': f'bearer {token}'}
 
-    def test_get_movies(self, client, test_movie, view_movies_header):
-        res = client.get('/movies', headers=view_movies_header)
+    def test_get_movies(self, client, test_movie):
+        res = client.get('/movies', headers=self.header('view:movies'))
 
         expected = {'success': True, 'movies': [test_movie.to_dict()]}
         assert res.get_json() == expected
 
-    def test_get_empty_movies_when_no_data(self, client, view_movies_header):
-        res = client.get('/movies', headers=view_movies_header)
+    def test_get_empty_movies_when_no_data(self, client):
+        res = client.get('/movies', headers=self.header('view:movies'))
 
         expected = {'success': True, 'movies': []}
         assert res.get_json() == expected
 
     def test_make_movie(self, client, new_movie_info):
-        res = client.post('/movies', json=new_movie_info)
+        res = client.post('/movies',
+                          json=new_movie_info,
+                          headers=self.header('add:movies'))
         expected = {'success': True, 'movie': new_movie_info}
         assert res.get_json() == expected
 
         movie = Movie.query.get(1)
         assert movie.to_dict() == new_movie_info
 
-    def test_wrong_date_format(self, client, new_movie_info):
+    def test_date_format(self, client, new_movie_info):
         new_movie_info['release_date'] = 'Tue Aug 16 1988'
-        res = client.post('/movies', json=new_movie_info)
+        res = client.post('/movies',
+                          json=new_movie_info,
+                          headers=self.header('add:movies'))
         assert res.status_code == 400
         assert res.get_json() == {
             'success': False,
@@ -65,7 +68,9 @@ class TestMovie:
         }
 
     def test_modify_movie(self, client, test_movie, new_movie_info):
-        res = client.patch('/movies/1', json=new_movie_info)
+        res = client.patch('/movies/1',
+                           json=new_movie_info,
+                           headers=self.header('modify:movies'))
         expected = {'success': True, 'movie': new_movie_info}
         assert res.get_json() == expected
 
@@ -73,19 +78,19 @@ class TestMovie:
         assert movie.to_dict() == new_movie_info
 
     def test_not_found_error_when_modify(self, client):
-        res = client.patch('/movies/1')
+        res = client.patch('/movies/1', headers=self.header('modify:movies'))
         assert res.status_code == 404
         assert res.get_json({'success': False, 'error': 'Not found'})
 
     def test_remove_movie(self, client, test_movie):
-        res = client.delete('/movies/1')
+        res = client.delete('/movies/1', headers=self.header('delete:movies'))
         expected = {'success': True, 'deleted': test_movie.to_dict()}
 
         assert res.get_json() == expected
         assert Movie.query.get(1) is None
 
     def test_not_found_error_when_remove(self, client):
-        res = client.delete('/movies/1')
+        res = client.delete('/movies/1', headers=self.header('delete:movies'))
         assert res.status_code == 404
         assert res.get_json({'success': False, 'error': 'Not found'})
 

@@ -67,6 +67,7 @@ def remove_movie(id):
 
 
 @api.route('/actors')
+@require_auth(permission='view:actors')
 def get_actors():
     actors = [a.to_dict() for a in Actor.query.all()]
     return jsonify({
@@ -76,6 +77,7 @@ def get_actors():
 
 
 @api.route('/actors', methods=['POST'])
+@require_auth(permission='add:actors')
 def make_actor():
     body = request.get_json()
     actor = Actor(**body)
@@ -85,6 +87,7 @@ def make_actor():
 
 
 @api.route('/actors/<int:id>', methods=['PATCH'])
+@require_auth(permission='modify:actors')
 def modify_actor(id):
     body = request.get_json()
     actor = Actor.query.get_or_404(id)
@@ -105,6 +108,7 @@ def modify_actor(id):
 
 
 @api.route('/actors/<int:id>', methods=['DELETE'])
+@require_auth(permission='delete:actors')
 def remove_actor(id):
     actor = Actor.query.get_or_404(id)
     actor.remove()

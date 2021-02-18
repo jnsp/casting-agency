@@ -1,13 +1,12 @@
 import json
 from base64 import b64encode, b64decode
 
-from dotenv import dotenv_values
 import pytest
 import requests
 
 from app import create_app
 from app.auth import get_auth_token, get_jwks, validate_jwt, \
-    check_permission, AuthError
+    check_permission, AuthError, config
 
 
 class TESTAuthToken:
@@ -87,11 +86,6 @@ class TestValidateJWT:
         assert e.value.status_code == 401
 
     def get_test_jwt(self):
-        config = {
-            **dotenv_values('.env.shared'),
-            **dotenv_values('.env.secret')
-        }
-
         url = f"https://{config['AUTH0_DOMAIN']}/oauth/token"
         headers = {'content-type': 'application/json'}
         data = {

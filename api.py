@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request, abort
 
-from auth import require_auth
+from auth import require_auth, AuthError
 from models import Movie, Actor
 
 api = Blueprint('api', __name__)
@@ -133,6 +133,14 @@ def not_found(e):
         'success': False,
         'error': 'Not found',
     }), 404
+
+
+@api.errorhandler(AuthError)
+def forbidden(e):
+    return jsonify({
+        'success': False,
+        'error': str(e),
+    }), 403
 
 
 def convert_str_to_date(date_str):

@@ -76,7 +76,7 @@ class TestMovie:
     def test_not_found_error_when_modify(self, client):
         res = client.patch('/movies/1', headers=header('modify:movies'))
         assert res.status_code == 404
-        assert res.get_json({'success': False, 'error': 'Not found'})
+        assert res.get_json() == {'success': False, 'error': 'Not found'}
 
     def test_remove_movie(self, client, test_movie):
         res = client.delete('/movies/1', headers=header('delete:movies'))
@@ -88,19 +88,23 @@ class TestMovie:
     def test_not_found_error_when_remove(self, client):
         res = client.delete('/movies/1', headers=header('delete:movies'))
         assert res.status_code == 404
-        assert res.get_json({'success': False, 'error': 'Not found'})
+        assert res.get_json() == {'success': False, 'error': 'Not found'}
 
+    def test_autherror_not_has_auth_header(self, client):
+        res = client.get('/movies')
+        assert res.status_code == 403
+        assert res.get_json() == {
+            'success': False,
+            'error': 'No Authorization header'
+        }
 
-@pytest.fixture
-def test_actor():
-    actor = Actor(name='ACTOR', age=10, gender='F')
-    actor.save()
-    return actor
-
-
-@pytest.fixture
-def new_actor_info():
-    return {'name': 'NEW_ACTOR', 'age': 20, 'gender': 'X'}
+    def test_autherror_not_has_proper_permission(self, client, test_movie):
+        res = client.delete('/movies/1', headers=header('view:movies'))
+        assert res.status_code == 403
+        assert res.get_json() == {
+            'success': False,
+            'error': 'Permission not found'
+        }
 
 
 class TestActor:
@@ -142,7 +146,7 @@ class TestActor:
     def test_not_found_error_when_modify(self, client):
         res = client.patch('/actors/1', headers=header('modify:actors'))
         assert res.status_code == 404
-        assert res.get_json({'success': False, 'error': 'Not found'})
+        assert res.get_json() == {'success': False, 'error': 'Not found'}
 
     def test_remove_actor(self, client, test_actor):
         res = client.delete('/actors/1', headers=header('delete:actors'))
@@ -153,7 +157,23 @@ class TestActor:
     def test_not_found_error_when_remove(self, client):
         res = client.delete('/actors/1', headers=header('delete:actors'))
         assert res.status_code == 404
-        assert res.get_json({'success': False, 'error': 'Not found'})
+        assert res.get_json() == {'success': False, 'error': 'Not found'}
+
+    def test_autherror_not_has_auth_header(self, client):
+        res = client.get('/actors')
+        assert res.status_code == 403
+        assert res.get_json() == {
+            'success': False,
+            'error': 'No Authorization header'
+        }
+
+    def test_autherror_not_has_proper_permission(self, client, test_actor):
+        res = client.delete('/actors/1', headers=header('view:actors'))
+        assert res.status_code == 403
+        assert res.get_json() == {
+            'success': False,
+            'error': 'Permission not found'
+        }
 
 
 def test_convert_str_to_date():

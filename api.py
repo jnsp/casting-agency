@@ -139,8 +139,8 @@ def not_found(e):
 def forbidden(e):
     return jsonify({
         'success': False,
-        'error': str(e),
-    }), 403
+        'error': e.error,
+    }), e.status_code
 
 
 def convert_str_to_date(date_str):

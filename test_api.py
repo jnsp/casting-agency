@@ -92,7 +92,7 @@ class TestMovie:
 
     def test_autherror_not_has_auth_header(self, client):
         res = client.get('/movies')
-        assert res.status_code == 403
+        assert res.status_code == 401
         assert res.get_json() == {
             'success': False,
             'error': 'No Authorization header'
@@ -161,7 +161,7 @@ class TestActor:
 
     def test_autherror_not_has_auth_header(self, client):
         res = client.get('/actors')
-        assert res.status_code == 403
+        assert res.status_code == 401
         assert res.get_json() == {
             'success': False,
             'error': 'No Authorization header'

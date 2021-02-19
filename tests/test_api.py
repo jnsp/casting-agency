@@ -46,11 +46,11 @@ class TestMovie:
         res = client.post('/movies',
                           json=new_movie_info,
                           headers=header('add:movies'))
-        expected = {'success': True, 'movie': new_movie_info}
+        expected = {'success': True, 'movie': {**new_movie_info, 'id': 1}}
         assert res.get_json() == expected
 
         movie = Movie.query.get(1)
-        assert movie.to_dict() == new_movie_info
+        assert movie.to_dict() == {**new_movie_info, 'id': 1}
 
     def test_date_format(self, client, new_movie_info):
         new_movie_info['release_date'] = 'Tue Aug 16 1988'
@@ -67,11 +67,11 @@ class TestMovie:
         res = client.patch('/movies/1',
                            json=new_movie_info,
                            headers=header('modify:movies'))
-        expected = {'success': True, 'movie': new_movie_info}
+        expected = {'success': True, 'movie': {**new_movie_info, 'id': 1}}
         assert res.get_json() == expected
 
         movie = Movie.query.get(1)
-        assert movie.to_dict() == new_movie_info
+        assert movie.to_dict() == {**new_movie_info, 'id': 1}
 
     def test_not_found_error_when_modify(self, client):
         res = client.patch('/movies/1', headers=header('modify:movies'))
@@ -127,21 +127,21 @@ class TestActor:
         res = client.post('/actors',
                           json=new_actor_info,
                           headers=header('add:actors'))
-        expected = {'success': True, 'actor': new_actor_info}
+        expected = {'success': True, 'actor': {**new_actor_info, 'id': 1}}
         assert res.get_json() == expected
 
         actor = Actor.query.get(1)
-        assert actor.to_dict() == new_actor_info
+        assert actor.to_dict() == {**new_actor_info, 'id': 1}
 
     def test_modify_actor(self, client, test_actor, new_actor_info):
         res = client.patch('/actors/1',
                            json=new_actor_info,
                            headers=header('modify:actors'))
-        expected = {'success': True, 'actor': new_actor_info}
+        expected = {'success': True, 'actor': {**new_actor_info, 'id': 1}}
         assert res.get_json() == expected
 
         actor = Actor.query.get(1)
-        assert actor.to_dict() == new_actor_info
+        assert actor.to_dict() == {**new_actor_info, 'id': 1}
 
     def test_not_found_error_when_modify(self, client):
         res = client.patch('/actors/1', headers=header('modify:actors'))

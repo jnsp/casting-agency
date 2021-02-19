@@ -19,7 +19,11 @@ class Movie(db.Model):
         db.session.commit()
 
     def to_dict(self):
-        return {'title': self.title, 'release_date': str(self.release_date)}
+        return {
+            'id': self.id,
+            'title': self.title,
+            'release_date': str(self.release_date)
+        }
 
 
 class Actor(db.Model):
@@ -48,6 +52,7 @@ class Actor(db.Model):
 
     def to_dict(self):
         return {
+            'id': self.id,
             'name': self.name,
             'age': self.age,
             'gender': self.gender,

@@ -39,6 +39,7 @@ def test_movie_model():
 def test_movie_to_dict():
     movie = Movie(title='TITLE', release_date=date(2020, 1, 1))
     assert movie.to_dict() == {
+        'id': None,
         'title': 'TITLE',
         'release_date': '2020-01-01',
     }
@@ -74,5 +75,9 @@ def test_actor_non_negative_age():
 
 def test_actor_to_dict():
     actor = Actor(name='Actor', age=10, gender='F')
-    assert actor.to_dict() == {'name': 'Actor', 'age': 10, 'gender': 'F'}
-    pass
+    assert actor.to_dict() == {
+        'id': None,
+        'name': 'Actor',
+        'age': 10,
+        'gender': 'F'
+    }

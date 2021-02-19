@@ -155,6 +155,14 @@ def not_found(e):
     }), 404
 
 
+@api.app_errorhandler(405)
+def methoed_not_allowed(e):
+    return jsonify({
+        'success': False,
+        'error': 'Method now allowed',
+    })
+
+
 @api.app_errorhandler(AuthError)
 def forbidden(e):
     return jsonify({

@@ -1,3 +1,7 @@
+"""
+This is only used for tests.
+Every keys here are NOT used in production env.
+"""
 from jose import jwt
 
 private_key = (

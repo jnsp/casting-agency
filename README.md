@@ -5,39 +5,39 @@ Temporaily, this is deployed 'http://casting-agency-jnsp.herokuapp.com/'
 
 ## Endpoints
 
-### GET `/login`
+GET `/login`
 
 Redirect to login page of Auth0.com.
 
-### GET `/movies`
+GET `/movies`
 
 Get movies. Required permission `view:movies`.
 
-### POST `/movies`
+POST `/movies`
 
 Add new movie. Required permission `add:movies`. New movie data should be json body.
 
-### PATCH `/movies/<id>`
+PATCH `/movies/<id>`
 
 Modify movie of `<id>`. Required permission `modify:movies`. Modified movie data should be json body.
 
-### DELETE `/movies/<id>`
+DELETE `/movies/<id>`
 
 Remove movie of `<id>`. Required permission `delete:movies`.
 
-### GET `/actors`
+GET `/actors`
 
 Get actors. Required permission `view:actors`.
 
-### POST `/actors`
+POST `/actors`
 
 Add new actor. Required permission `add:actors`. New actor data should be json body.
 
-### PATCH `/actors/<id>`
+PATCH `/actors/<id>`
 
 Modify actor of `<id>`. Required permission `modify:actors`. Modified actor data should be json body.
 
-### DELETE `/actors/<id>`
+DELETE `/actors/<id>`
 
 Remove actor of `<id>`. Required permission `delete:actors`.
 
@@ -47,7 +47,7 @@ There are 3 Roles, and each roles has its own permissions.
 
 * Casting Assistant: `view:movies`, `view:actors`
 * Casting Director: Casting Assistant's + `add:actors`, `delete:actors`, `modify:actors`, `modify:movies`
-* Executive Director: Casting Director's + `add:movies`, `delete:movies`
+* Executive Producer: Casting Director's + `add:movies`, `delete:movies`
 
 ## How to install
 
@@ -176,7 +176,7 @@ There are five test files here.
 * `test_api.py`: unit tests for api endpoints
 * `test_auth.py`: unit tests for authentication and authorization with fake JWT
 * `test_basic.py`: unit tests for app factory
-* `test_heroku.py`: intergration tests for real endpoints after Heroku deployment
+* `test_heroku.py`: functional tests for real endpoints after Heroku deployment
 * `test_models.py`: unit tests for data models
 
 Note: `test_heroku` is only able to be tested after deployment and `.env` file has `CASTING_ASISTANT_TOKEN`, `CASTING_DIRECTOR_TOKEN`, and `EXECUTIVE_PRODUCER_TOKEN`.

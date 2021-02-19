@@ -139,7 +139,7 @@ def remove_actor(id):
     })
 
 
-@api.errorhandler(400)
+@api.app_errorhandler(400)
 def bad_request(e):
     return jsonify({
         'success': False,
@@ -147,7 +147,7 @@ def bad_request(e):
     }), 400
 
 
-@api.errorhandler(404)
+@api.app_errorhandler(404)
 def not_found(e):
     return jsonify({
         'success': False,
@@ -155,7 +155,7 @@ def not_found(e):
     }), 404
 
 
-@api.errorhandler(AuthError)
+@api.app_errorhandler(AuthError)
 def forbidden(e):
     return jsonify({
         'success': False,

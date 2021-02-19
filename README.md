@@ -5,43 +5,48 @@ Temporaily, this is deployed 'http://casting-agency-jnsp.herokuapp.com/'
 
 ## Endpoints
 
-* GET `/login`
-	Redirect to login page of Autho0.
+### GET `/login`
 
-* GET `/movies`
-	Get movies. Required permission `view:movies`.
+Redirect to login page of Auth0.com.
 
-* POST `/movies`
-  Add new movie. Required permission `add:movies`.
-	New movie data should be json body.
+### GET `/movies`
 
-* PATCH `/movies/<id>`
-	Modify movie of `<id>`. Required permission `modify:movies`.
-	Modified movie data should be json body.
+Get movies. Required permission `view:movies`.
 
-* DELETE `/movies/<id>`
-	Remove movie of `<id>`. Required permission `delete:movies`.
+### POST `/movies`
 
-* GET `/actors`
-	Get actors. Required permission `view:actors`.
+Add new movie. Required permission `add:movies`. New movie data should be json body.
 
-* POST `/actors`
-  Add new actor. Required permission `add:actors`.
-	New actor data should be json body.
+### PATCH `/movies/<id>`
 
-* PATCH `/actors/<id>`
-	Modify actor of `<id>`. Required permission `modify:actors`.
-	Modified actor data should be json body.
+Modify movie of `<id>`. Required permission `modify:movies`. Modified movie data should be json body.
 
-* DELETE `/actors/<id>`
-	Remove actor of `<id>`. Required permission `delete:actors`.
+### DELETE `/movies/<id>`
+
+Remove movie of `<id>`. Required permission `delete:movies`.
+
+### GET `/actors`
+
+Get actors. Required permission `view:actors`.
+
+### POST `/actors`
+
+Add new actor. Required permission `add:actors`. New actor data should be json body.
+
+### PATCH `/actors/<id>`
+
+Modify actor of `<id>`. Required permission `modify:actors`. Modified actor data should be json body.
+
+### DELETE `/actors/<id>`
+
+Remove actor of `<id>`. Required permission `delete:actors`.
 
 ### Role and Permissions
 
 There are 3 Roles, and each roles has its own permissions.
 
-* Casting Assitant: `view:movies`, `view:actors`
-* Casting Director: Casting Assitant's + `add:actors`, `delete:actors`, `modify:actors`, `modify:movies`
+* Casting Assistant: `view:movies`, `view:actors`
+* Casting Director: Casting Assistant's + `add:actors`, `delete:actors`, `modify:actors`, `modify:movies`
 * Executive Director: Casting Director's + `add:movies`, `delete:movies`
 
 ## How to install

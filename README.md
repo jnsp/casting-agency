@@ -1,7 +1,7 @@
 # casting-agency
 
 This is casting agency's API server.
-Temporaily, this is deployed 'http://casting-agency-jnsp.herokuapp.com/'
+Temporaily, this is deployed on 'http://casting-agency-jnsp.herokuapp.com/'.
 
 ## Endpoints
 
@@ -154,3 +154,7 @@ There are five test files here.
 * `test_models.py`: unit tests for data models
 
 Note: `test_heroku` is only able to be tested after deployment and `.env` file has `CASTING_ASISTANT_TOKEN`, `CASTING_DIRECTOR_TOKEN`, and `EXECUTIVE_PRODUCER_TOKEN`.
+
+## Note
+
+This is the Capstone Project of 'Full Stack Web Developer Nanodegree Program' on [Udacity.com](udacity.com).

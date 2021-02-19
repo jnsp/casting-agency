@@ -10,7 +10,7 @@ This is based on `Python 3.9.1`.
 
 #### For development
 
-Note: If you want to do pytest, install dev.txt requirements like below.
+Note: If you want to do pytest, install `requirements/dev.txt` requirements like below.
 
 ```bash
 pip install -r requirements/dev.txt

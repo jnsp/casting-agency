@@ -5,41 +5,15 @@ Temporaily, this is deployed 'http://casting-agency-jnsp.herokuapp.com/'
 
 ## Endpoints
 
-GET `/login`
-
-Redirect to login page of Auth0.com.
-
-GET `/movies`
-
-Get movies. Required permission `view:movies`.
-
-POST `/movies`
-
-Add new movie. Required permission `add:movies`. New movie data should be json body.
-
-PATCH `/movies/<id>`
-
-Modify movie of `<id>`. Required permission `modify:movies`. Modified movie data should be json body.
-
-DELETE `/movies/<id>`
-
-Remove movie of `<id>`. Required permission `delete:movies`.
-
-GET `/actors`
-
-Get actors. Required permission `view:actors`.
-
-POST `/actors`
-
-Add new actor. Required permission `add:actors`. New actor data should be json body.
-
-PATCH `/actors/<id>`
-
-Modify actor of `<id>`. Required permission `modify:actors`. Modified actor data should be json body.
-
-DELETE `/actors/<id>`
-
-Remove actor of `<id>`. Required permission `delete:actors`.
+* GET `/login`: Redirect to login page of Auth0.com.
+* GET `/movies`: Get movies. Required permission `view:movies`.
+* POST `/movies`: Add new movie. Required permission `add:movies`. New movie data should be json body.
+* PATCH `/movies/<id>`: Modify movie of `<id>`. Required permission `modify:movies`. Modified movie data should be json body.
+* DELETE `/movies/<id>`: Remove movie of `<id>`. Required permission `delete:movies`.
+* GET `/actors`: Get actors. Required permission `view:actors`.
+* POST `/actors`: Add new actor. Required permission `add:actors`. New actor data should be json body.
+* PATCH `/actors/<id>`: Modify actor of `<id>`. Required permission `modify:actors`. Modified actor data should be json body.
+* DELETE `/actors/<id>`: Remove actor of `<id>`. Required permission `delete:actors`.
 
 ### Role and Permissions
 

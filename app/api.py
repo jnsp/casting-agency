@@ -1,10 +1,29 @@
 from datetime import datetime
-from flask import Blueprint, jsonify, request, abort
+from dotenv import dotenv_values
+from flask import Blueprint, jsonify, request, abort, redirect
 
 from .auth import require_auth, AuthError
 from .models import Movie, Actor
 
 api = Blueprint('api', __name__)
+
+config = {**dotenv_values('.env.shared'), **dotenv_values('.env.secret')}
+
+
+@api.route('/login')
+def login():
+    auth0_login_url = (f'https://{config["AUTH0_DOMAIN"]}/authorize?'
+                       f'audience={config["API_AUDIENCE"]}&'
+                       'response_type=token&'
+                       f'client_id={config["CLIENT_ID"]}&'
+                       f'redirect_uri={config["APP_URL"]}/callback&'
+                       'state=STATE')
+    return redirect(auth0_login_url, 302)
+
+
+@api.route('/callback')
+def callback():
+    return 'Logined'
 
 
 @api.route('/movies')

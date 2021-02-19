@@ -1,13 +1,14 @@
 from functools import wraps
+import os
 
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 from flask import request, current_app
 from jose import jwt
 import requests
 
 from . import fake_jwt
 
-config = {**dotenv_values('.env.shared'), **dotenv_values('.env.secret')}
+load_dotenv()
 
 
 def get_auth_token():
@@ -26,7 +27,7 @@ def get_auth_token():
 
 
 def get_jwks():
-    jwks_url = f"https://{config['AUTH0_DOMAIN']}/.well-known/jwks.json"
+    jwks_url = f"https://{os.getenv('AUTH0_DOMAIN')}/.well-known/jwks.json"
     return requests.get(jwks_url).json()
 
 
@@ -45,9 +46,9 @@ def validate_jwt(token, jwks):
     try:
         payload = jwt.decode(token,
                              signing_key[0],
-                             algorithms=config['ALGORITHM'],
-                             audience=config['API_AUDIENCE'],
-                             issuer=f"https://{config['AUTH0_DOMAIN']}/")
+                             algorithms=os.getenv('ALGORITHM'),
+                             audience=os.getenv('API_AUDIENCE'),
+                             issuer=f"https://{os.getenv('AUTH0_DOMAIN')}/")
     except jwt.ExpiredSignatureError:
         raise AuthError('Token is expired', 401)
     except jwt.JWTClaimsError:

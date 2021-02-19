@@ -1,12 +1,14 @@
-import json
 from base64 import b64encode, b64decode
+import json
+import os
 
+from dotenv import load_dotenv
 import pytest
 import requests
 
 from app import create_app
 from app.auth import get_auth_token, get_jwks, validate_jwt, \
-    check_permission, AuthError, config
+    check_permission, AuthError
 
 
 class TESTAuthToken:
@@ -86,12 +88,13 @@ class TestValidateJWT:
         assert e.value.status_code == 401
 
     def get_test_jwt(self):
-        url = f"https://{config['AUTH0_DOMAIN']}/oauth/token"
+        load_dotenv()
+        url = f"https://{os.getenv('AUTH0_DOMAIN')}/oauth/token"
         headers = {'content-type': 'application/json'}
         data = {
-            'client_id': config['TEST_CLIENT_ID'],
-            'client_secret': config['TEST_CLIENT_SECRET'],
-            'audience': config['API_AUDIENCE'],
+            'client_id': os.getenv('TEST_CLIENT_ID'),
+            'client_secret': os.getenv('TEST_CLIENT_SECRET'),
+            'audience': os.getenv('API_AUDIENCE'),
             'grant_type': 'client_credentials',
         }
         res = requests.post(url, headers=headers, json=data)

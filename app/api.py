@@ -24,7 +24,7 @@ def login():
 
 @api.route('/callback')
 def callback():
-    return 'Logined'
+    return 'Logged-in!'
 
 
 @api.route('/movies')

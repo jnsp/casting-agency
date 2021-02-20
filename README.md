@@ -157,4 +157,4 @@ Note: `test_heroku` is only able to be tested after deployment and `.env` file h
 
 ## Note
 
-This is the Capstone Project of 'Full Stack Web Developer Nanodegree Program' on [Udacity.com](https://www.udacity.com).
+This is the Capstone Project of '[Full Stack Web Developer Nanodegree Program](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd0044)' on [Udacity.com](https://www.udacity.com).
